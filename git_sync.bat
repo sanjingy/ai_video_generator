@@ -1,23 +1,24 @@
 @echo off
+
 setlocal enabledelayedexpansion
 
-echo ğŸ” å½“å‰ Git çŠ¶æ€ï¼š
+echo ?? µ±Ç° Git ×´Ì¬£º
 git status
 
-set /p confirm=æ˜¯å¦ç»§ç»­æäº¤å¹¶æ¨é€ï¼Ÿ(Y/N): 
+set /p confirm=ÊÇ·ñ¼ÌĞøÌá½»²¢ÍÆËÍ£¿(Y/N): 
 if /I "%confirm%" NEQ "Y" (
-    echo âŒ å·²å–æ¶ˆæ“ä½œã€‚
+    echo ? ÒÑÈ¡Ïû²Ù×÷¡£
     exit /b
 )
 
-:: è®¾ç½® commit ä¿¡æ¯ï¼ˆå¸¦æ—¶é—´ï¼‰
+:: ÉèÖÃ commit ĞÅÏ¢£¨´øÊ±¼ä£©
 for /f %%i in ('powershell -command "Get-Date -Format \"yyyy-MM-dd HH:mm:ss\""') do set now=%%i
-set msg=è‡ªåŠ¨åŒæ­¥æäº¤ï¼š!now!
+set msg=×Ô¶¯Í¬²½Ìá½»£º!now!
 
-echo ğŸ•’ å½“å‰æ—¶é—´ï¼š!now!
+echo ?? µ±Ç°Ê±¼ä£º!now!
 git add .
 git commit -m "!msg!"
 git push
 
-echo âœ… åŒæ­¥å®Œæˆï¼
+echo ? Í¬²½Íê³É£¡
 pause
