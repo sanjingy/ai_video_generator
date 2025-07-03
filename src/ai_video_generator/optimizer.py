@@ -2,7 +2,7 @@ from openai import OpenAI
 import json, re
 
 client = OpenAI(
-    api_key=input("你的API密钥:"),
+    api_key=input("你的文字美化模型API密钥:"),
     base_url="https://api.deepseek.com"
 )
 

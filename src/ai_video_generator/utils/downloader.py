@@ -3,7 +3,7 @@ import tempfile
 import requests
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from pydub import AudioSegment
-
+'''下载视频，并取出音频'''
 def download_video(url: str) -> str:
     """
     下载视频到临时路径，返回视频文件路径

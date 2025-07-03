@@ -1,7 +1,7 @@
 import whisper
 from ai_video_generator.utils.downloader import download_video, extract_audio_from_video
 #抖音
-
+'''音频转换文字'''
 def transcribe_from_url(url: str) -> str:
     """
     给定视频链接，下载视频、提取音频并转文字
