@@ -1,6 +1,6 @@
 import whisper
 from ai_video_generator.utils.downloader import download_video, extract_audio_from_video
-
+#抖音
 
 def transcribe_from_url(url: str) -> str:
     """
@@ -13,9 +13,9 @@ def transcribe_from_url(url: str) -> str:
     audio_path = extract_audio_from_video(video_path)
 
     print("🧠 Whisper 模型加载中...")
-    model = whisper.load_model("base")  # 可改为 "small" 或 "medium"
+    model = whisper.load_model("medium")  # 可改为 "small" 或 "medium"或“large”
 
     print("📝 开始转录...")
-    result = model.transcribe(audio_path)
+    result = model.transcribe(audio_path,fp16=False,language="zh")
 
     return result["text"]
