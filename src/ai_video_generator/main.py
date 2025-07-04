@@ -21,8 +21,16 @@ from optimizer import optimize_text_and_generate_tags
 from generator import generate_assets
 from video_builder import create_clip
 import os
+from transcriber import transcribe_from_url
 
-sentences = optimize_text_and_generate_tags(next, style="二次元")
+video_url = input("🎥 请输入视频链接：")
+print("📥 下载视频并转音频...")
+text = transcribe_from_url(video_url)
+
+print("🧠 开始优化转录文本并生成风格 tag...")
+result = optimize_text_and_generate_tags(text, style="二次元")
+#sentences = optimize_text_and_generate_tags(next, style="二次元")
+
 output_dir = "output"
 os.makedirs(output_dir, exist_ok=True)
 
