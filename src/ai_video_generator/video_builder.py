@@ -8,22 +8,43 @@ from moviepy.video.io.VideoFileClip import VideoFileClip
 '''合成单句视频模块'''
 
 def create_clip(image_path: str, audio_path: str, subtitle_text: str, output_path: str):
-    audio = AudioFileClip(audio_path)
-    duration = audio.duration
+    try:
+        # 加载音频
+        audio = AudioFileClip(audio_path)
+        duration = audio.duration
 
-    image = ImageClip(image_path).with_duration(duration).resize(height=720)
-    image = image.set_audio(audio)
+        # 创建图像剪辑
+        image = ImageClip(image_path).with_duration(duration)
+        image = image.resized(height=720).with_audio(audio)
 
-    subtitle = TextClip(
-        subtitle_text,
-        fontsize=48,
-        color='white',
-        font='Arial-Bold',
-        bg_color='black',
-        method='caption',
-        size=image.size
-    ).with_duration(duration).set_position(('center', 'bottom'))
+        # 创建字幕 - 最新MoviePy兼容写法
+        subtitle = (TextClip(
+            text=subtitle_text,  # 明确使用参数名
+            size=(image.w, None),
+            color='white',
+            bg_color='black',
+            method='caption',
+            #font='Arial-Bold',  # 字体名称
+            font_size=48)  # 字号
+                    .with_duration(duration)
+                    #.set_position(('center', 'bottom'))
+                    )
 
-    final = CompositeVideoClip([image, subtitle])
-    final.write_videofile(output_path, fps=24, codec="libx264", audio_codec="aac")
-    print(f"🎞️ 视频片段已保存：{output_path}")
+        # 合成最终视频
+        final = CompositeVideoClip([image, subtitle])
+        final.write_videofile(
+            output_path,
+            fps=24,
+            codec="libx264",
+            audio_codec="aac",
+            threads=4,
+            #verbose=False,
+            logger=None  # 禁用日志避免干扰
+        )
+        print(f"✅ 视频成功生成: {output_path}")
+        return True
+
+    except Exception as e:
+        print(f"❌ 视频生成失败: {str(e)}")
+        return False
+
