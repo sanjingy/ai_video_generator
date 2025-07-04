@@ -11,7 +11,7 @@ def create_clip(image_path: str, audio_path: str, subtitle_text: str, output_pat
     audio = AudioFileClip(audio_path)
     duration = audio.duration
 
-    image = ImageClip(image_path).set_duration(duration).resize(height=720)
+    image = ImageClip(image_path).with_duration(duration).resize(height=720)
     image = image.set_audio(audio)
 
     subtitle = TextClip(
@@ -22,7 +22,7 @@ def create_clip(image_path: str, audio_path: str, subtitle_text: str, output_pat
         bg_color='black',
         method='caption',
         size=image.size
-    ).set_duration(duration).set_position(('center', 'bottom'))
+    ).with_duration(duration).set_position(('center', 'bottom'))
 
     final = CompositeVideoClip([image, subtitle])
     final.write_videofile(output_path, fps=24, codec="libx264", audio_codec="aac")

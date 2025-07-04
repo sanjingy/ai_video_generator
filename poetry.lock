@@ -317,6 +317,25 @@ files = [
 ]
 
 [[package]]
+name = "dashscope"
+version = "1.23.6"
+description = "dashscope client sdk library"
+optional = false
+python-versions = ">=3.8.0"
+groups = ["main"]
+files = [
+    {file = "dashscope-1.23.6-py3-none-any.whl", hash = "sha256:aadf9fd0e1648f8b492e060e857b1be025a4ecb9ec440c36129633cd60b54a23"},
+]
+
+[package.dependencies]
+aiohttp = "*"
+requests = "*"
+websocket-client = "*"
+
+[package.extras]
+tokenizer = ["tiktoken"]
+
+[[package]]
 name = "decorator"
 version = "5.2.1"
 description = "Decorators for Humans"
@@ -2243,6 +2262,23 @@ socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
 zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
+name = "websocket-client"
+version = "1.8.0"
+description = "WebSocket client for Python with low level API options"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "websocket_client-1.8.0-py3-none-any.whl", hash = "sha256:17b44cc997f5c498e809b22cdf2d9c7a9e71c02c8cc2b6c56e7c2d1239bfa526"},
+    {file = "websocket_client-1.8.0.tar.gz", hash = "sha256:3239df9f44da632f96012472805d40a23281a991027ce11d2f45a6f24ac4c3da"},
+]
+
+[package.extras]
+docs = ["Sphinx (>=6.0)", "myst-parser (>=2.0.0)", "sphinx-rtd-theme (>=1.1.0)"]
+optional = ["python-socks", "wsaccel"]
+test = ["websockets"]
+
+[[package]]
 name = "yarl"
 version = "1.20.1"
 description = "Yet another URL library"
@@ -2364,4 +2400,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "b83567c8d72c34dcab3a32603871496b02165334019cea237a727df3ee374e0a"
+content-hash = "faf7f796a3c1f9f694e53ab6f29c84b71497b0e6ba4a7eebaa1c1c99ccb97384"
