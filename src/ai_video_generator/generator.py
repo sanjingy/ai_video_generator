@@ -3,17 +3,20 @@ import requests
 import asyncio
 import edge_tts
 from dashscope import ImageSynthesis  # 通义千问使用另一套
+import json
+from pathlib import Path
 # from openai import OpenAI
 '''图像 & 语音生成器模块'''
 
 # 暂时使用通义千文的
 # client = OpenAI(api_key=input("请输入图片模型API"), base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
-
+config = json.loads(Path("D:\download\config.json").read_text(encoding="utf-8"))
 def generate_image(prompt: str, output_path: str):
     try:
         # 调用API
         response = ImageSynthesis.call(
-            api_key=input("输入图片生成大模型key:"),
+            #api_key=input("输入图片生成大模型key:"),
+            api_key=config["api_keys"]["dashscope"],
             model="wanx2.1-t2i-turbo",
             prompt=prompt,
             n=1,

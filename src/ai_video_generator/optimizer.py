@@ -1,11 +1,13 @@
 from openai import OpenAI
 import json, re
+from pathlib import Path
+
+config = json.loads(Path("D:\download\config.json").read_text(encoding="utf-8"))
 
 client = OpenAI(
-    api_key=input("你的文字美化模型API密钥:"),
+    api_key=config["api_keys"]["deepseek"],
     base_url="https://api.deepseek.com"
 )
-
 
 def optimize_text_and_generate_tags(text: str, style: str = "二次元") -> list[dict]:
     """
