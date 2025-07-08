@@ -17,7 +17,7 @@ if __name__ == "__main__":
         print("🏷️ Tags:", " ".join(item["tags"]))
         print("-" * 40)
 '''
-
+'''
 import json
 from pathlib import Path
 
@@ -51,3 +51,11 @@ if __name__ == "__main__":
         img_path, audio_path = generate_assets(sentence, tags, idx, output_dir)
         video_path = os.path.join(output_dir, f"clip_{idx:03}.mp4")
         create_clip(img_path, audio_path, sentence, video_path)
+'''
+# src/ai_video_generator/main.py
+import asyncio
+from ai_video_generator.pipeline import process_video
+
+if __name__ == "__main__":
+    video_url = input("请输入视频URL：").strip()
+    asyncio.run(process_video(video_url, output_dir="outputs"))

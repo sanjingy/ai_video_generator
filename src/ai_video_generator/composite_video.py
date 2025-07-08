@@ -1,7 +1,5 @@
-from moviepy.editor import VideoFileClip, concatenate_videoclips
-from moviepy.video.VideoClip import ImageClip, TextClip
-from moviepy.audio.io.AudioFileClip import AudioFileClip
-from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
+from moviepy.video.io.VideoFileClip import VideoFileClip
+from moviepy.video.compositing.CompositeVideoClip import concatenate_videoclips
 from pathlib import Path
 
 def concat_clips(output_dir:Path, final_name="final.mp4"):
