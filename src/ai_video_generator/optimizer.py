@@ -9,7 +9,7 @@ client = OpenAI(
     base_url="https://api.deepseek.com"
 )
 
-def optimize_text_and_generate_tags(text: str, style: str = "二次元") -> list[dict]:
+def optimize_text_and_generate_tags(text: str, style: str) -> list[dict]:
     """
     将文本逐句优化，并为每句生成风格提示词，返回结构化列表
     """

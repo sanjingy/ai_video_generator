@@ -5,7 +5,16 @@ import edge_tts
 from dashscope import ImageSynthesis  # 通义千问的图像生成
 
 # 读取配置
-config_path = Path(__file__).parents[2] / "config.json"
+config_path = Path(r"D:\download\config.json")  # 使用原始字符串
+try:
+    config_data = json.loads(config_path.read_text(encoding="utf-8"))
+    print("配置加载成功:", config_data)
+except FileNotFoundError:
+    print(f"错误：配置文件 {config_path} 不存在")
+except json.JSONDecodeError as e:
+    print(f"错误：配置文件格式无效 - {e}")
+except Exception as e:
+    print(f"未知错误：{e}")
 config = json.loads(config_path.read_text(encoding="utf-8"))
 
 def get_paths(sentence, tags, odir):
@@ -43,6 +52,7 @@ async def generate_audio(text: str, output_path: str, voice="zh-CN-XiaoxiaoNeura
     await communicate.save(output_path)
     print(f"🔊 语音已生成：{output_path}")
 
+"""根据句子和tag生成图像和音频文件"""
 async def generate_assets_async(sentence, tags, idx, odir):
     img, aud = get_paths(sentence, tags, odir)
     if img.exists() and aud.exists():

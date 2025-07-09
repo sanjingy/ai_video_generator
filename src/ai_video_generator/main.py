@@ -54,8 +54,20 @@ if __name__ == "__main__":
 '''
 # src/ai_video_generator/main.py
 import asyncio
+import json
+from pathlib import Path
 from ai_video_generator.pipeline import process_video
+from ai_video_generator.video_builder import save_srt, build_video_from_assets
 
-if __name__ == "__main__":
-    video_url = input("请输入视频URL：").strip()
-    asyncio.run(process_video(video_url, output_dir="outputs"))
+config = json.loads(Path("D:\download\config.json").read_text(encoding="utf-8"))
+output_dir = Path(config["output_dir"])
+output_dir.mkdir(exist_ok=True)
+
+# 执行视频生成
+items = asyncio.run(process_video(input("🎥 请输入视频链接："), str(output_dir)))
+
+# 生成字幕文件
+save_srt(items, output_dir/"subtitles.srt")
+
+# 合成最终视频
+build_video_from_assets(items, output_dir/"final_video.mp4")
