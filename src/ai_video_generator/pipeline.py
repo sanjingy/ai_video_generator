@@ -6,8 +6,9 @@ from .video_builder import build_video_from_assets
 import asyncio
 from pathlib import Path
 import json
+'''定义配置文件'''
 config = json.loads(Path("D:\download\config.json").read_text(encoding="utf-8"))
-
+'''抖音视频复制，重新生成 '''
 async def process_video(url: str, output_dir: str):
     # 1. Whisper 转录
     print("📥 下载视频并转音频...")
@@ -16,7 +17,7 @@ async def process_video(url: str, output_dir: str):
     style = config["image_style"]
 
     print("🧠 开始优化转录文本并生成风格 tag...")
-    tagged  = optimize_text_and_generate_tags(text, style)
+    tagged= optimize_text_and_generate_tags(text, style)
     # tagged = [      (s, optimize_text_and_generate_tags(s, style))for s in sentences if s.strip() ]
 
 
@@ -27,6 +28,8 @@ async def process_video(url: str, output_dir: str):
     for idx, item in enumerate(tagged):
         sentence, tags = item["optimized"], item["tags"]
         img, aud = await generate_assets_async(sentence, tags, idx, odir)
+        if not Path(aud).exists():
+            raise FileNotFoundError(f"音频文件不存在: {aud}")
         results.append((sentence, img, aud))
 
 

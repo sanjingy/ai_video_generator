@@ -16,7 +16,8 @@ dependencies = [
     "edge-tts (>=7.0.2,<8.0.0)",
     "dashscope (>=1.23.6,<2.0.0)",
     "retry (>=0.9.2,<0.10.0)",
-    "pysubs2 (>=1.8.0,<2.0.0)"
+    "pysubs2 (>=1.8.0,<2.0.0)",
+    "matplotlib (>=3.10.3,<4.0.0)"
 ]
 
 [tool.poetry]

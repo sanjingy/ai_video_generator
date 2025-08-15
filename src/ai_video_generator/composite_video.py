@@ -2,6 +2,7 @@ from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.video.compositing.CompositeVideoClip import concatenate_videoclips
 from pathlib import Path
 
+'''将 SRT 字幕叠加进主视频'''
 def concat_clips(output_dir:Path, final_name="final.mp4"):
     clips = []
     for mp4 in sorted(output_dir.glob("clip_*.mp4")):

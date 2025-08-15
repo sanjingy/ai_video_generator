@@ -2,6 +2,7 @@ from moviepy.video.VideoClip import ImageClip, TextClip
 from moviepy.audio.io.AudioFileClip import AudioFileClip
 from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip,concatenate_videoclips
 from moviepy.video.io.VideoFileClip import VideoFileClip
+from moviepy.video.tools.subtitles import SubtitlesClip
 
 import pysubs2
 from pathlib import Path
@@ -53,9 +54,7 @@ def create_clip(image_path: str, audio_path: str, subtitle_text: str, output_pat
         print(f"❌ 视频生成失败: {str(e)}")
         return False
 
-'''
-生成字幕
-'''
+'''生成 SRT 字幕文件'''
 def save_srt(items, srt_path):
     subs = pysubs2.SSAFile()
     for i,(txt, img, aud) in enumerate(items,1):
@@ -68,30 +67,30 @@ def save_srt(items, srt_path):
     subs.save(srt_path)
     print("字幕文件已保存：", srt_path)
 
-'''合并视频'''
+'''将图像 + 音频 合成主视频 final_video.mp4'''
 
 def build_video_from_assets(items, output_path, target_fps=24, forced_duration=None):
     clips = []
     for txt, img, aud in items:
         try:
-            with AudioFileClip(aud) as audio:
-                duration = forced_duration or audio.duration
-                image = ImageClip(img).with_duration(duration).with_audio(audio)
+            audio = AudioFileClip(aud)
+            duration = forced_duration or audio.duration
+            image = ImageClip(img).with_duration(duration).with_audio(audio)
 
-                subtitle = TextClip(
-                    font=Path(r"C:\Windows\Fonts\ARIALNI.TTF"),
-                    text=txt,
-                    font_size=48,
-                    color='white',
-                    bg_color='black',
-                    size=image.size,
-                    method='caption',  # 需要 ImageMagick
-                    horizontal_align="center",
-                    vertical_align="bottom",
-                ).with_duration(duration)#.set_position(('center', 'bottom'))
+            subtitle = TextClip(
+                font=Path(r"C:\Windows\Fonts\simsun.ttc"),
+                text=txt,
+                font_size=48,
+                color='white',
+                bg_color='black',
+                size=image.size,
+                method='caption',  # 需要 ImageMagick
+                horizontal_align="center",
+                vertical_align="bottom",
+            ).with_duration(duration)#.set_position(('center', 'bottom'))
 
-                clip = CompositeVideoClip([image, subtitle]).with_fps(target_fps)
-                clips.append(clip)
+            clip = CompositeVideoClip([image, subtitle]).with_fps(24)
+            clips.append(clip)
 
         except Exception as e:
             print(f"❌ 错误：处理 {aud} 时出错：{e}")
@@ -104,3 +103,68 @@ def build_video_from_assets(items, output_path, target_fps=24, forced_duration=N
     final = concatenate_videoclips(clips, method="compose")
     final.write_videofile(str(output_path), fps=target_fps, codec="libx264", audio_codec="aac")
     print("✅ 视频合并完成：", output_path)
+
+
+def add_subtitles_to_video(video_path: Path, subtitle_path: Path, output_path: Path):
+    """
+    将 .srt 字幕叠加到视频上并导出为新视频
+    :param video_path: 原始视频路径
+    :param subtitle_path: SRT 字幕路径
+    :param output_path: 带字幕的视频输出路径
+    """
+
+    os.environ["IMAGEMAGICK_BINARY"] = "magick"  # 设置 ImageMagick 路径（确保已安装）
+
+    print("📼 加载主视频：", video_path)
+    main_clip = VideoFileClip(str(video_path))
+
+    # 定义字幕生成器：将每行文字转为 TextClip
+    generator = lambda txt: TextClip(
+        txt,
+        font="Arial Unicode MS",   # 可改成本地存在的中文字体，如："ARIALUNI.TTF"
+        fontsize=48,
+        color="white",
+        bg_color="black",
+        method="caption",
+        size=main_clip.size,
+    )
+
+    print("📝 加载字幕文件：", subtitle_path)
+    subtitles = SubtitlesClip(str(subtitle_path), generator)
+
+    print("🎬 开始叠加字幕...")
+    final = CompositeVideoClip([main_clip, subtitles.set_position(("center", "bottom"))])
+
+    final.write_videofile(
+        str(output_path),
+        fps=main_clip.fps,
+        codec="libx264",
+        audio_codec="aac",
+        temp_audiofile=str(output_path.with_suffix(".m4a")),
+        remove_temp=True
+    )
+
+    print("✅ 成功导出带字幕视频：", output_path)
+
+def concat_video_clips(input_dir: Path, output_path: Path):
+    print("📁 加载子视频目录：", input_dir)
+    if not input_dir.exists():
+        raise FileNotFoundError(f"❌ 输入目录不存在：{input_dir}")
+
+    # 读取所有视频文件，按文件名排序
+    video_files = sorted(input_dir.glob("*.mp4"))
+    if not video_files:
+        raise ValueError("❌ 没有找到任何子视频文件 (*.mp4)")
+
+    print(f"🔍 发现 {len(video_files)} 个子视频，将进行拼接...")
+
+    clips = [VideoFileClip(str(f)) for f in video_files]
+    final_clip = concatenate_videoclips(clips, method="compose")
+
+    final_clip.write_videofile(
+        str(output_path),
+        codec="libx264",
+        audio_codec="aac",
+        threads=4
+    )
+    print("✅ 视频拼接完成：", output_path)
